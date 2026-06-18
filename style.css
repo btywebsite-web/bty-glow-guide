@@ -1,0 +1,262 @@
+:root {
+  --page-w: 560px;
+  --page-h: 580px;
+  --shift:  280px;
+  --persp:  2500px;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  overscroll-behavior: none;
+}
+
+body {
+  overscroll-behavior: none;
+}
+
+#zoom-wrapper {
+  touch-action: none;        /* JS handles all touch — no browser interference */
+  will-change: transform;
+  transform-origin: center center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(ellipse at center, #e1aaac 0%, #e1aaac 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-family: 'Georgia', serif;
+}
+
+.title {
+  color: #ffffff;
+  font-size: clamp(14px, 3vw, 30px);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0 16px;
+}
+
+/* ── Book frame — single-page centering ── */
+.book-frame {
+  transition: transform 0.60s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+  will-change: transform;
+  transform: translateZ(0);
+}
+.book-frame.is-cover { transform: translateX(calc(-1 * var(--shift))); }
+.book-frame.is-back  { transform: translateX(var(--shift)); }
+
+/* ── Scene / perspective ── */
+.scene {
+  perspective: var(--persp);
+  perspective-origin: 50% 50%;
+}
+
+/* ── Book shell ── */
+.book {
+  position: relative;
+  width:  calc(var(--page-w) * 2);
+  height: var(--page-h);
+  border-radius: 2px 6px 6px 2px;
+}
+
+/* ── Paper halves ── */
+.paper-left  { display: none; }
+.paper-right {
+  position: absolute;
+  top: 0; right: 0;
+  width:  var(--page-w);
+  height: var(--page-h);
+  border-radius: 0 6px 6px 0;
+  background: transparent;
+}
+
+/* ── Spine ── */
+.spine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 100%;
+  z-index: 500;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+.book.is-open .spine { opacity: 1; }
+
+/* ── Pages ── */
+.page {
+  position: absolute;
+  top: 0; right: 0;
+  width:  var(--page-w);
+  height: var(--page-h);
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 0.85s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+  will-change: transform;
+}
+
+.page.flipped { transform: rotateY(-180deg); }
+
+.page-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.page-front {
+  border-radius: 0 6px 6px 0;
+  box-shadow: 4px 0 16px rgba(0,0,0,0.18), 0 16px 40px rgba(0,0,0,0.22);
+}
+.page-back {
+  transform: rotateY(180deg);
+  border-radius: 2px 0 0 2px;
+  box-shadow: -4px 0 16px rgba(0,0,0,0.15), 0 16px 40px rgba(0,0,0,0.18);
+}
+
+.page-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.page-front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to left, rgba(0,0,0,0.06) 0%, transparent 7%);
+  pointer-events: none;
+}
+.page-back::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.06) 0%, transparent 7%);
+  pointer-events: none;
+}
+
+/* ── Click zones ── */
+.click-zone {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  z-index: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  outline: none;
+  user-select: none;
+}
+
+.click-zone-left  { left: 0;  width: 48%; }
+.click-zone-right { right: 0; width: 48%; }
+
+.book.is-cover .click-zone-left  { display: none; }
+.book.is-cover .click-zone-right { left: 0; right: 0; width: 100%; }
+
+.book.is-back .click-zone-right { display: none; }
+.book.is-back .click-zone-left  { left: 0; right: 0; width: 100%; }
+
+/* Mobile portrait: hide title, centre catalogue */
+body.mobile-portrait {
+  min-height: 0;
+  overscroll-behavior: none;
+  gap: 0;
+  justify-content: center;
+}
+
+body.mobile-portrait .title { display: none; }
+
+/* Mobile landscape: full-screen catalogue only */
+body.mobile-landscape {
+  min-height: 0;
+  overscroll-behavior: none;
+  gap: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+body.mobile-landscape .title { display: none; }
+
+/* ── Rotate prompt ── */
+.rotate-prompt {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.rotate-prompt.visible { display: flex; }
+
+.rotate-prompt-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 24px;
+  max-width: 280px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+
+.rotate-icon {
+  font-size: 48px;
+  animation: spin-hint 1.5s ease-in-out infinite alternate;
+  color: #c8926a;
+}
+
+@keyframes spin-hint {
+  from { transform: rotate(-45deg); }
+  to   { transform: rotate(45deg); }
+}
+
+.rotate-prompt-box p {
+  font-family: 'Georgia', serif;
+  font-size: 15px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.rotate-dismiss {
+  background: #c8926a;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 24px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
