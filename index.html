@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BTY Advance — Glow Guide</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <p class="title">BTY Advance &mdash; Glow Guide</p>
+
+  <div id="zoom-wrapper">
+  <div class="book-frame is-cover" id="book-frame">
+    <div class="scene">
+        <div class="book is-cover" id="book">
+
+          <div class="paper-right"></div>
+
+          <!-- Page 3 — bottom of right stack -->
+          <div class="page" id="page-3">
+            <div class="page-face page-front">
+              <img src="images/B3.jpg" alt="2nd Spread Right" decoding="async">
+            </div>
+            <div class="page-face page-back">
+              <img src="images/F2.jpg" alt="Back Cover" decoding="async">
+            </div>
+          </div>
+
+          <!-- Page 2 -->
+          <div class="page" id="page-2">
+            <div class="page-face page-front">
+              <img src="images/B1.jpg" alt="1st Spread Right" decoding="async">
+            </div>
+            <div class="page-face page-back">
+              <img src="images/B2.jpg" alt="2nd Spread Left" decoding="async">
+            </div>
+          </div>
+
+          <!-- Page 1 — cover, top of right stack -->
+          <div class="page" id="page-1">
+            <div class="page-face page-front">
+              <img src="images/F1.jpg" alt="Cover" decoding="async">
+            </div>
+            <div class="page-face page-back">
+              <img src="images/F3.jpg" alt="1st Spread Left" decoding="async">
+            </div>
+          </div>
+
+          <div class="spine"></div>
+
+          <div class="click-zone click-zone-left" id="btn-prev"></div>
+          <div class="click-zone click-zone-right" id="btn-next"></div>
+
+        </div>
+      </div>
+  </div>
+  </div>
+
+  <!-- Rotate prompt (mobile portrait only) -->
+  <div class="rotate-prompt" id="rotate-prompt">
+    <div class="rotate-prompt-box">
+      <div class="rotate-icon">&#8635;</div>
+      <p>Rotate your phone for a better viewing experience</p>
+      <button class="rotate-dismiss" id="rotate-dismiss">Got it</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
